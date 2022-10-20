@@ -46,6 +46,7 @@ import org.springframework.cloud.netflix.zuul.filters.route.RibbonCommand;
 import org.springframework.http.client.ClientHttpResponse;
 
 /**
+ * 集成了Ribbon和Hystrix的抽象类
  * @param <RQ> {@link ClientRequest} subtype
  * @param <LBC> {@link AbstractLoadBalancingClient} subtype
  * @param <RQ> {@link ClientRequest} subtype
@@ -207,6 +208,7 @@ public abstract class AbstractRibbonCommand<LBC extends AbstractLoadBalancerAwar
 	protected ClientHttpResponse run() throws Exception {
 		final RequestContext context = RequestContext.getCurrentContext();
 
+		// 抽象方法，创建请求类
 		RQ request = createRequest();
 		RS response;
 

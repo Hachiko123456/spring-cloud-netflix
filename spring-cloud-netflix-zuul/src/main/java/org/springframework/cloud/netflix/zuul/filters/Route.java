@@ -32,7 +32,7 @@ import org.springframework.util.StringUtils;
 public class Route {
 
 	public Route(String id, String path, String location, String prefix,
-			Boolean retryable, Set<String> ignoredHeaders) {
+				 Boolean retryable, Set<String> ignoredHeaders) {
 		this.id = id;
 		this.prefix = StringUtils.hasText(prefix) ? prefix : "";
 		this.path = path;
@@ -49,7 +49,7 @@ public class Route {
 	}
 
 	public Route(String id, String path, String location, String prefix,
-			Boolean retryable, Set<String> ignoredHeaders, boolean prefixStripped) {
+				 Boolean retryable, Set<String> ignoredHeaders, boolean prefixStripped) {
 		this(id, path, location, prefix, retryable, ignoredHeaders);
 		this.prefixStripped = prefixStripped;
 	}

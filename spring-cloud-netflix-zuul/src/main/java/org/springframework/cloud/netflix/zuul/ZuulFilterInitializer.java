@@ -62,6 +62,9 @@ public class ZuulFilterInitializer {
 		this.filterRegistry = filterRegistry;
 	}
 
+	/**
+	 * 初始化完后注册所有的Filter
+	 **/
 	@PostConstruct
 	public void contextInitialized() {
 		log.info("Starting filter initializer");

@@ -47,6 +47,7 @@ import static org.springframework.cloud.netflix.zuul.filters.support.FilterConst
 import static org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.PRE_TYPE;
 
 /**
+ * 把application/x-www-form-urlencoded类型的请求对应的Request封装成{@link FormBodyRequestWrapper}
  * Pre {@link ZuulFilter} that parses form data and reencodes it for downstream services.
  *
  * @author Dave Syer
@@ -87,6 +88,9 @@ public class FormBodyWrapperFilter extends ZuulFilter {
 		return FORM_BODY_WRAPPER_FILTER_ORDER;
 	}
 
+	/**
+	 * 过滤请求类型为application/x-www-form-urlencoded的请求
+	 */
 	@Override
 	public boolean shouldFilter() {
 		RequestContext ctx = RequestContext.getCurrentContext();

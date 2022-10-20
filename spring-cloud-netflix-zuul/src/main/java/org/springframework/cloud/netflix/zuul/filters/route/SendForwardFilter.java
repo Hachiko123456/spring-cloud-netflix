@@ -28,6 +28,7 @@ import static org.springframework.cloud.netflix.zuul.filters.support.FilterConst
 import static org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.SEND_FORWARD_FILTER_ORDER;
 
 /**
+ * 用RequestDispatcher forwards请求
  * Route {@link ZuulFilter} that forwards requests using the {@link RequestDispatcher}.
  * Forwarding location is located in the {@link RequestContext} attribute
  * {@link org.springframework.cloud.netflix.zuul.filters.support.FilterConstants#FORWARD_TO_KEY}.

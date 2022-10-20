@@ -37,6 +37,7 @@ import org.springframework.cloud.netflix.ribbon.support.RibbonCommandContext;
 import static org.springframework.cloud.netflix.ribbon.support.RibbonRequestCustomizer.Runner.customize;
 
 /**
+ * okhttp 请求信息
  * @author Spencer Gibb
  */
 public class OkHttpRibbonRequest extends ContextAwareRequest implements Cloneable {

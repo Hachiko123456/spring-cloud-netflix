@@ -47,6 +47,7 @@ import static org.springframework.cloud.netflix.zuul.filters.support.FilterConst
 import static org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.SERVICE_ID_KEY;
 
 /**
+ * 使用Ribbon、Hystrix和可插拔的httpClient发送请求
  * Route {@link ZuulFilter} that uses Ribbon, Hystrix and pluggable http clients to send
  * requests. ServiceIds are found in the {@link RequestContext} attribute
  * {@link org.springframework.cloud.netflix.zuul.filters.support.FilterConstants#SERVICE_ID_KEY}.
@@ -106,6 +107,7 @@ public class RibbonRoutingFilter extends ZuulFilter {
 	@Override
 	public boolean shouldFilter() {
 		RequestContext ctx = RequestContext.getCurrentContext();
+		// 要没有配置URL且配置了serviceId的才会使用该过滤器
 		return (ctx.getRouteHost() == null && ctx.get(SERVICE_ID_KEY) != null
 				&& ctx.sendZuulResponse());
 	}

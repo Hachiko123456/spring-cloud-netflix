@@ -30,6 +30,7 @@ import org.springframework.cloud.netflix.ribbon.support.RibbonCommandContext;
 import static org.springframework.cloud.netflix.ribbon.support.RibbonRequestCustomizer.Runner.customize;
 
 /**
+ * Apache Http Client 请求信息
  * @author Christian Lohmann
  */
 public class RibbonApacheHttpRequest extends ContextAwareRequest implements Cloneable {

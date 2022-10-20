@@ -58,6 +58,7 @@ import static org.springframework.cloud.netflix.zuul.filters.support.FilterConst
 import static org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.X_FORWARDED_PROTO_HEADER;
 
 /**
+ * 筛选出路径对应的路由器
  * Pre {@link ZuulFilter} that determines where and how to route based on the supplied
  * {@link RouteLocator}. Also sets various proxy related headers for downstream requests.
  *
@@ -95,7 +96,7 @@ public class PreDecorationFilter extends ZuulFilter {
 	private ProxyRequestHelper proxyRequestHelper;
 
 	public PreDecorationFilter(RouteLocator routeLocator, String dispatcherServletPath,
-			ZuulProperties properties, ProxyRequestHelper proxyRequestHelper) {
+							   ZuulProperties properties, ProxyRequestHelper proxyRequestHelper) {
 		this.routeLocator = routeLocator;
 		this.properties = properties;
 		this.urlPathHelper
@@ -128,31 +129,33 @@ public class PreDecorationFilter extends ZuulFilter {
 		RequestContext ctx = RequestContext.getCurrentContext();
 		final String requestURI = this.urlPathHelper
 				.getPathWithinApplication(ctx.getRequest());
+		// 根据URL获取对应的Route
 		Route route = this.routeLocator.getMatchingRoute(requestURI);
 		if (route != null) {
 			String location = route.getLocation();
 			if (location != null) {
+				// 请求路径和请求标识
 				ctx.put(REQUEST_URI_KEY, route.getPath());
 				ctx.put(PROXY_KEY, route.getId());
 				if (!route.isCustomSensitiveHeaders()) {
 					this.proxyRequestHelper.addIgnoredHeaders(
 							this.properties.getSensitiveHeaders().toArray(new String[0]));
-				}
-				else {
+				} else {
 					this.proxyRequestHelper.addIgnoredHeaders(
 							route.getSensitiveHeaders().toArray(new String[0]));
 				}
 
+				// 该请求是否可重试
 				if (route.getRetryable() != null) {
 					ctx.put(RETRYABLE_KEY, route.getRetryable());
 				}
 
+				// 直接配置URL
 				if (location.startsWith(HTTP_SCHEME + ":")
 						|| location.startsWith(HTTPS_SCHEME + ":")) {
 					ctx.setRouteHost(getUrl(location));
 					ctx.addOriginResponseHeader(SERVICE_HEADER, location);
-				}
-				else if (location.startsWith(FORWARD_LOCATION_PREFIX)) {
+				} else if (location.startsWith(FORWARD_LOCATION_PREFIX)) {
 					ctx.set(FORWARD_TO_KEY,
 							StringUtils.cleanPath(
 									location.substring(FORWARD_LOCATION_PREFIX.length())
@@ -160,6 +163,7 @@ public class PreDecorationFilter extends ZuulFilter {
 					ctx.setRouteHost(null);
 					return null;
 				}
+				// 配置的ServiceId
 				else {
 					// set serviceId for use in filters.route.RibbonRequest
 					ctx.set(SERVICE_ID_KEY, location);
@@ -173,8 +177,7 @@ public class PreDecorationFilter extends ZuulFilter {
 					String remoteAddr = ctx.getRequest().getRemoteAddr();
 					if (xforwardedfor == null) {
 						xforwardedfor = remoteAddr;
-					}
-					else if (!xforwardedfor.contains(remoteAddr)) { // Prevent duplicates
+					} else if (!xforwardedfor.contains(remoteAddr)) { // Prevent duplicates
 						xforwardedfor += ", " + remoteAddr;
 					}
 					ctx.addZuulRequestHeader(X_FORWARDED_FOR_HEADER, xforwardedfor);
@@ -184,8 +187,7 @@ public class PreDecorationFilter extends ZuulFilter {
 							toHostHeader(ctx.getRequest()));
 				}
 			}
-		}
-		else {
+		} else {
 			log.warn("No route found for uri: " + requestURI);
 			String forwardURI = getForwardUri(requestURI);
 
@@ -204,8 +206,7 @@ public class PreDecorationFilter extends ZuulFilter {
 			log.debug("zuulServletPath=" + this.properties.getServletPath());
 			fallBackUri = fallBackUri.replaceFirst(this.properties.getServletPath(), "");
 			log.debug("Replaced Zuul servlet path:" + fallBackUri);
-		}
-		else if (this.dispatcherServletPath != null) {
+		} else if (this.dispatcherServletPath != null) {
 			// remove the DispatcherServlet servletPath from the requestUri
 			log.debug("dispatcherServletPath=" + this.dispatcherServletPath);
 			fallBackUri = fallBackUri.replaceFirst(this.dispatcherServletPath, "");
@@ -243,8 +244,7 @@ public class PreDecorationFilter extends ZuulFilter {
 				builder.append(",").append(port);
 				port = builder.toString();
 			}
-		}
-		else {
+		} else {
 			port = request.getHeader(X_FORWARDED_PORT_HEADER) + "," + port;
 		}
 		if (hasHeader(request, X_FORWARDED_PROTO_HEADER)) {
@@ -270,8 +270,7 @@ public class PreDecorationFilter extends ZuulFilter {
 			if (prefix != null) {
 				if (prefix.endsWith("/") && route.getPrefix().startsWith("/")) {
 					newPrefixBuilder.append(prefix, 0, prefix.length() - 1);
-				}
-				else {
+				} else {
 					newPrefixBuilder.append(prefix);
 				}
 			}
@@ -288,8 +287,7 @@ public class PreDecorationFilter extends ZuulFilter {
 		if ((port == HTTP_PORT && HTTP_SCHEME.equals(request.getScheme()))
 				|| (port == HTTPS_PORT && HTTPS_SCHEME.equals(request.getScheme()))) {
 			return request.getServerName();
-		}
-		else {
+		} else {
 			return request.getServerName() + ":" + port;
 		}
 	}
@@ -297,8 +295,7 @@ public class PreDecorationFilter extends ZuulFilter {
 	private URL getUrl(String target) {
 		try {
 			return new URL(target);
-		}
-		catch (MalformedURLException ex) {
+		} catch (MalformedURLException ex) {
 			throw new IllegalStateException("Target URL is malformed", ex);
 		}
 	}

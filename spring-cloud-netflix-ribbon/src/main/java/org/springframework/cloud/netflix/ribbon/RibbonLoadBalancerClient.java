@@ -16,21 +16,20 @@
 
 package org.springframework.cloud.netflix.ribbon;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.Collections;
-import java.util.Map;
-
 import com.netflix.client.config.IClientConfig;
 import com.netflix.loadbalancer.ILoadBalancer;
 import com.netflix.loadbalancer.Server;
-
 import org.springframework.cloud.client.DefaultServiceInstance;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerRequest;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
+
+import java.io.IOException;
+import java.net.URI;
+import java.util.Collections;
+import java.util.Map;
 
 import static org.springframework.cloud.netflix.ribbon.RibbonUtils.updateToSecureConnectionIfNeeded;
 
@@ -61,8 +60,7 @@ public class RibbonLoadBalancerClient implements LoadBalancerClient {
 			RibbonServer ribbonServer = (RibbonServer) instance;
 			server = ribbonServer.getServer();
 			uri = updateToSecureConnectionIfNeeded(original, ribbonServer);
-		}
-		else {
+		} else {
 			server = new Server(instance.getScheme(), instance.getHost(),
 					instance.getPort());
 			IClientConfig clientConfig = clientFactory.getClientConfig(serviceId);
@@ -80,8 +78,9 @@ public class RibbonLoadBalancerClient implements LoadBalancerClient {
 
 	/**
 	 * New: Select a server using a 'key'.
+	 *
 	 * @param serviceId of the service to choose an instance for
-	 * @param hint to specify the service instance
+	 * @param hint      to specify the service instance
 	 * @return the selected {@link ServiceInstance}
 	 */
 	public ServiceInstance choose(String serviceId, Object hint) {
@@ -104,16 +103,19 @@ public class RibbonLoadBalancerClient implements LoadBalancerClient {
 	 * the last parameter to not mess with the `execute(serviceId, ServiceInstance,
 	 * request)` method. This somewhat breaks the fluent coding style when using a lambda
 	 * to define the LoadBalancerRequest.
-	 * @param <T> returned request execution result type
+	 *
+	 * @param <T>       returned request execution result type
 	 * @param serviceId id of the service to execute the request to
-	 * @param request to be executed
-	 * @param hint used to choose appropriate {@link Server} instance
+	 * @param request   to be executed
+	 * @param hint      used to choose appropriate {@link Server} instance
 	 * @return request execution result
 	 * @throws IOException executing the request may result in an {@link IOException}
 	 */
 	public <T> T execute(String serviceId, LoadBalancerRequest<T> request, Object hint)
 			throws IOException {
+		// 获取负载均衡器
 		ILoadBalancer loadBalancer = getLoadBalancer(serviceId);
+		// 根据负载均衡器选择一个服务
 		Server server = getServer(loadBalancer, hint);
 		if (server == null) {
 			throw new IllegalStateException("No instances available for " + serviceId);
@@ -127,7 +129,7 @@ public class RibbonLoadBalancerClient implements LoadBalancerClient {
 
 	@Override
 	public <T> T execute(String serviceId, ServiceInstance serviceInstance,
-			LoadBalancerRequest<T> request) throws IOException {
+						 LoadBalancerRequest<T> request) throws IOException {
 		Server server = null;
 		if (serviceInstance instanceof RibbonServer) {
 			server = ((RibbonServer) serviceInstance).getServer();
@@ -149,8 +151,7 @@ public class RibbonLoadBalancerClient implements LoadBalancerClient {
 		catch (IOException ex) {
 			statsRecorder.recordStats(ex);
 			throw ex;
-		}
-		catch (Exception ex) {
+		} catch (Exception ex) {
 			statsRecorder.recordStats(ex);
 			ReflectionUtils.rethrowRuntimeException(ex);
 		}
@@ -211,7 +212,7 @@ public class RibbonLoadBalancerClient implements LoadBalancerClient {
 		}
 
 		public RibbonServer(String serviceId, Server server, boolean secure,
-				Map<String, String> metadata) {
+							Map<String, String> metadata) {
 			this.serviceId = serviceId;
 			this.server = server;
 			this.secure = secure;

@@ -33,6 +33,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import static org.springframework.cloud.netflix.ribbon.RibbonUtils.updateToSecureConnectionIfNeeded;
 
 /**
+ * Okhttp 请求客户端
  * @author Spencer Gibb
  * @author Ryan Baxter
  * @author Tim Ysewyn

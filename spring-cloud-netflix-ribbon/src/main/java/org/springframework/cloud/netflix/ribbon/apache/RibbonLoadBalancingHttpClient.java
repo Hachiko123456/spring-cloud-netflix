@@ -36,6 +36,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import static org.springframework.cloud.netflix.ribbon.RibbonUtils.updateToSecureConnectionIfNeeded;
 
 /**
+ * Apache Http Client 请求客户端
  * @author Christian Lohmann
  * @author Ryan Baxter
  * @author Tim Ysewyn

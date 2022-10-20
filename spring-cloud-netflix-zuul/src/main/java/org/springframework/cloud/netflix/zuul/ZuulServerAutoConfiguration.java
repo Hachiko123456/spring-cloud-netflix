@@ -279,6 +279,9 @@ public class ZuulServerAutoConfiguration {
 
 	}
 
+	/**
+	 * 刷新路由事件监听器
+	 */
 	private static class ZuulRefreshListener
 			implements ApplicationListener<ApplicationEvent> {
 

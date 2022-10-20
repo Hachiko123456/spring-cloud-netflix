@@ -42,14 +42,18 @@ import org.springframework.web.servlet.handler.AbstractUrlHandlerMapping;
  */
 public class ZuulHandlerMapping extends AbstractUrlHandlerMapping {
 
+	// 路由定位器
 	private final RouteLocator routeLocator;
 
+	// Controller
 	private final ZuulController zuul;
 
 	private ErrorController errorController;
 
+	// 正则表达式匹配器
 	private PathMatcher pathMatcher = new AntPathMatcher();
 
+	// 是否需要刷新路由
 	private volatile boolean dirty = true;
 
 	public ZuulHandlerMapping(RouteLocator routeLocator, ZuulController zuul) {

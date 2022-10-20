@@ -32,6 +32,7 @@ import static org.springframework.cloud.netflix.zuul.filters.support.FilterConst
 import static org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.SERVLET_30_WRAPPER_FILTER_ORDER;
 
 /**
+ * 包装request，兼容Servlet3.0
  * Pre {@link ZuulFilter} that wraps requests in a Servlet 3.0 compliant wrapper. Zuul's
  * default wrapper is only Servlet 2.5 compliant.
  *

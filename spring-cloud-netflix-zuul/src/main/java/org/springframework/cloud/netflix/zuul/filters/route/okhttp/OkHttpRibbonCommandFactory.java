@@ -51,9 +51,11 @@ public class OkHttpRibbonCommandFactory extends AbstractRibbonCommandFactory {
 	@Override
 	public OkHttpRibbonCommand create(final RibbonCommandContext context) {
 		final String serviceId = context.getServiceId();
+		// 服务降级
 		FallbackProvider fallbackProvider = getFallbackProvider(serviceId);
 		final OkHttpLoadBalancingClient client = this.clientFactory.getClient(serviceId,
 				OkHttpLoadBalancingClient.class);
+		// 设置负载均衡类
 		client.setLoadBalancer(this.clientFactory.getLoadBalancer(serviceId));
 
 		return new OkHttpRibbonCommand(serviceId, client, context, zuulProperties,

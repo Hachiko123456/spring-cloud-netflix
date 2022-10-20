@@ -39,6 +39,7 @@ import org.springframework.util.StringUtils;
 import static com.netflix.hystrix.HystrixCommandProperties.ExecutionIsolationStrategy.SEMAPHORE;
 
 /**
+ * Zuul配置文件对应的实体类
  * @author Spencer Gibb
  * @author Dave Syer
  * @author Mathias Düsterhöft
@@ -122,6 +123,7 @@ public class ZuulProperties {
 	private boolean forceOriginalQueryStringEncoding = false;
 
 	/**
+	 * 默认路径
 	 * Path to install Zuul as a servlet (not part of Spring MVC). The servlet is more
 	 * memory efficient for requests with large bodies, e.g. file uploads.
 	 */

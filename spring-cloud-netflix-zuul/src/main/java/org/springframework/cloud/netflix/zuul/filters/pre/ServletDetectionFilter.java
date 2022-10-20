@@ -30,6 +30,7 @@ import static org.springframework.cloud.netflix.zuul.filters.support.FilterConst
 import static org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.SERVLET_DETECTION_FILTER_ORDER;
 
 /**
+ * 判断请求是由{@link DispatcherServlet}还是{@link ZuulServlet}传来的
  * Detects whether a request is ran through the {@link DispatcherServlet} or
  * {@link ZuulServlet}. The purpose was to detect this up-front at the very beginning of
  * Zuul filter processing and rely on this information in all filters. RequestContext is

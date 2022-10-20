@@ -35,6 +35,7 @@ import org.springframework.util.PatternMatchUtils;
 import org.springframework.util.StringUtils;
 
 /**
+ * 在{@link SimpleRouteLocator}的基础上增加了两个功能，第一个是从{@link DiscoveryClient}中发现路由信息，第二是实现了{@link RefreshableRouteLocator}，能够对路由进行动态刷新
  * A {@link RouteLocator} that combines static, configured routes with those from a
  * {@link DiscoveryClient}. The discovery client takes precedence.
  *

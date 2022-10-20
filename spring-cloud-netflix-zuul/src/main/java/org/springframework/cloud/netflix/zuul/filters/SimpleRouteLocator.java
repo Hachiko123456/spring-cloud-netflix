@@ -35,6 +35,7 @@ import org.springframework.util.PathMatcher;
 import org.springframework.util.StringUtils;
 
 /**
+ * 基于配置文件的路由定位器
  * Simple {@link RouteLocator} based on configuration data held in {@link ZuulProperties}.
  *
  * @author Dave Syer
@@ -45,8 +46,10 @@ public class SimpleRouteLocator implements RouteLocator, Ordered {
 
 	private static final int DEFAULT_ORDER = 0;
 
+	// 配置文件中的路由信息
 	private ZuulProperties properties;
 
+	// 路径正则配置器
 	private PathMatcher pathMatcher = new AntPathMatcher();
 
 	private String dispatcherServletPath = "/";
@@ -66,6 +69,12 @@ public class SimpleRouteLocator implements RouteLocator, Ordered {
 		this.zuulServletPath = properties.getServletPath();
 	}
 
+	/**
+	 * 路由定位器和其他组件的交互，把最终定位的{@link Route}列表提供出去，核心方法
+	 *
+	 * @param
+	 * @return java.util.List<org.springframework.cloud.netflix.zuul.filters.Route>
+	 **/
 	@Override
 	public List<Route> getRoutes() {
 		List<Route> values = new ArrayList<>();
@@ -73,9 +82,9 @@ public class SimpleRouteLocator implements RouteLocator, Ordered {
 			ZuulRoute route = entry.getValue();
 			String path = route.getPath();
 			try {
+				// ZuulRoute转Route
 				values.add(getRoute(route, path));
-			}
-			catch (Exception e) {
+			} catch (Exception e) {
 				if (log.isWarnEnabled()) {
 					log.warn("Invalid route, routeId: " + route.getId()
 							+ ", routeServiceId: " + route.getServiceId() + ", msg: "
@@ -101,6 +110,11 @@ public class SimpleRouteLocator implements RouteLocator, Ordered {
 
 	}
 
+	/**
+	 * 获取配置文件配置的路由信息
+	 * @param
+	 * @return java.util.Map<java.lang.String,org.springframework.cloud.netflix.zuul.filters.ZuulProperties.ZuulRoute>
+	 **/
 	protected Map<String, ZuulRoute> getRoutesMap() {
 		if (this.routes.get() == null) {
 			this.routes.set(locateRoutes());
@@ -145,6 +159,13 @@ public class SimpleRouteLocator implements RouteLocator, Ordered {
 		return null;
 	}
 
+	/**
+	 * {@link ZuulRoute} 转 {@link Route}
+	 *
+	 * @param route
+	 * @param path
+	 * @return org.springframework.cloud.netflix.zuul.filters.Route
+	 **/
 	protected Route getRoute(ZuulRoute route, String path) {
 		if (route == null) {
 			return null;
@@ -187,8 +208,10 @@ public class SimpleRouteLocator implements RouteLocator, Ordered {
 	}
 
 	/**
+	 * 获取配置文件的配置路由信息
 	 * Compute a map of path pattern to route. The default is just a static map from the
 	 * {@link ZuulProperties}, but subclasses can add dynamic calculations.
+	 *
 	 * @return map of Zuul routes
 	 */
 	protected Map<String, ZuulRoute> locateRoutes() {
@@ -220,15 +243,13 @@ public class SimpleRouteLocator implements RouteLocator, Ordered {
 				adjustedPath = path.substring(this.dispatcherServletPath.length());
 				log.debug("Stripped dispatcherServletPath");
 			}
-		}
-		else if (RequestUtils.isZuulServletRequest()) {
+		} else if (RequestUtils.isZuulServletRequest()) {
 			if (StringUtils.hasText(this.zuulServletPath)
 					&& !this.zuulServletPath.equals("/")) {
 				adjustedPath = path.substring(this.zuulServletPath.length());
 				log.debug("Stripped zuulServletPath");
 			}
-		}
-		else {
+		} else {
 			// do nothing
 		}
 
